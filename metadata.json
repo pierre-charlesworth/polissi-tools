@@ -1,0 +1,5 @@
+{
+  "name": "BioCalc: OD600 & Growth",
+  "description": "A laboratory calculator for bacterial growth dilution and harvest time prediction. Includes AI-powered strain analysis for doubling time estimates.",
+  "requestFramePermissions": []
+}
