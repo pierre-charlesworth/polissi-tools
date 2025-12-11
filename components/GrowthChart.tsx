@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   LineChart,
@@ -64,7 +65,7 @@ export const GrowthChart: React.FC<GrowthChartProps> = ({ data, targetOD, startO
   const stnOpacity = isDarkMode ? 0.05 : 0.05;
 
   return (
-    <div className="w-full h-96 bg-white dark:bg-lab-card rounded-md border border-zinc-200 dark:border-white/10 p-8 shadow-sm dark:shadow-2xl dark:shadow-black/20 transition-colors duration-300">
+    <div className="w-full h-96 bg-white dark:bg-lab-card rounded-2xl border border-zinc-200 dark:border-white/10 p-8 shadow-sm dark:shadow-2xl dark:shadow-black/20 transition-colors duration-300">
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-lg font-medium font-sans text-zinc-900 dark:text-zinc-100 tracking-wide">Growth Trajectory</h3>
         <div className="flex items-center gap-4">
