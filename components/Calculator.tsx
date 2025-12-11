@@ -14,10 +14,20 @@ interface CalculatorProps {
 
 const InfoTooltip: React.FC<{ text: string }> = ({ text }) => (
   <div className="group/tooltip relative inline-flex items-center justify-center align-middle normal-case z-50">
-    <div className="cursor-help text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1 -m-1">
+    <div className="cursor-help text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors p-1.5 -m-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
       <HelpCircle className="w-4 h-4" />
     </div>
-    <div className="absolute bottom-full right-0 mb-2 w-56 p-3 bg-zinc-800 dark:bg-zinc-700 text-zinc-100 text-xs rounded-lg shadow-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all pointer-events-none text-center font-sans font-normal leading-relaxed border border-zinc-700 dark:border-zinc-600 z-50">
+    <div className="
+      absolute bottom-full right-0 mb-2 w-48 
+      px-3 py-2
+      bg-zinc-900 dark:bg-zinc-200 
+      text-zinc-50 dark:text-zinc-900 
+      text-xs font-normal tracking-wide leading-5
+      rounded shadow-md
+      opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible 
+      transition-all duration-200 ease-out transform scale-95 group-hover/tooltip:scale-100 origin-bottom-right
+      pointer-events-none text-left z-50
+    ">
       {text}
     </div>
   </div>
@@ -37,7 +47,7 @@ const M3TextField: React.FC<{
   icon?: React.ElementType;
 }> = ({ label, value, onChange, disabled, type = "number", inputMode = "decimal", step, suffix, tooltip, icon: Icon }) => {
   return (
-    <div className="relative">
+    <div className="relative hover:z-30 transition-z duration-0">
       <input
         type={type}
         inputMode={inputMode}
@@ -140,6 +150,8 @@ export const Calculator: React.FC<CalculatorProps> = ({ experiment, onUpdate, is
   const mediaVol = formatVolume(results.mediaVolume);
   const totalVol = formatVolume(results.mediaVolume + results.inoculumVolume);
   const lagTimeVal = parseFloat(String(experiment.lagTime)) || 0;
+  
+  const isTracking = !!experiment.trackingStartTime;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
@@ -147,7 +159,13 @@ export const Calculator: React.FC<CalculatorProps> = ({ experiment, onUpdate, is
       <div className="grid md:grid-cols-2 gap-6 md:gap-8">
         {/* INPUT CARD */}
         <div className="bg-white dark:bg-lab-card rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm transition-colors duration-300 relative">
-          <div className="bg-zinc-50 dark:bg-white/5 px-6 py-5 rounded-t-2xl border-b border-zinc-200 dark:border-white/5 flex items-center justify-between transition-colors duration-300">
+          <div className={`
+            bg-zinc-50 dark:bg-white/5 px-6 py-5 
+            rounded-t-2xl 
+            ${isTracking ? 'rounded-b-2xl border-b-0 md:rounded-b-none md:border-b' : 'border-b'} 
+            border-zinc-200 dark:border-white/5 
+            flex items-center justify-between transition-all duration-300
+          `}>
             <div className="flex items-center gap-3">
               <FlaskConical className="text-emerald-600 dark:text-emerald-500 w-5 h-5" />
               <h2 className="text-lg font-semibold font-sans tracking-wide text-zinc-900 dark:text-zinc-100">Parameters</h2>
@@ -163,7 +181,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ experiment, onUpdate, is
             />
           </div>
           
-          <div className="p-6 space-y-8">
+          <div className={`p-6 space-y-8 ${isTracking ? 'hidden md:block' : ''}`}>
             {/* Dilution Section */}
             <div className="space-y-5">
               <div className="flex justify-between items-center mb-2">
@@ -278,52 +296,61 @@ export const Calculator: React.FC<CalculatorProps> = ({ experiment, onUpdate, is
 
         {/* RESULTS CARD */}
         <div className="space-y-6 md:space-y-8">
-          <div className="bg-white dark:bg-lab-card rounded-2xl border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 p-6 relative group shadow-sm transition-colors duration-300">
+          <div className={`
+            bg-white dark:bg-lab-card rounded-2xl border border-zinc-200 dark:border-white/10 
+            text-zinc-900 dark:text-zinc-100 relative group shadow-sm transition-colors duration-300
+            ${isTracking ? 'p-4 md:p-6' : 'p-6'}
+          `}>
              
              <div className="relative z-10">
-               <div className="flex items-center gap-2 mb-8 text-emerald-600 dark:text-emerald-500">
+               <div className={`
+                 flex items-center gap-2 text-emerald-600 dark:text-emerald-500
+                 ${isTracking ? 'mb-0 md:mb-8' : 'mb-8'}
+               `}>
                  <Droplets className="w-5 h-5" />
                  <h2 className="text-lg font-semibold font-sans tracking-wide text-zinc-900 dark:text-zinc-100">Protocol Recipe</h2>
                </div>
-
-               {results.isValid && !results.error ? (
-                 <div className="space-y-8">
-                    {/* Media Display - Swapped for Fixed Media Mode */}
-                    <div className="flex items-end justify-between border-b border-zinc-200 dark:border-white/5 pb-4 transition-colors duration-300">
-                      <span className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
-                        {experiment.calculationMode === 'fixed_media' ? 'Use Base Media' : 'Add Fresh Media'}
-                      </span>
-                      <div className="text-right">
-                        <span className="text-3xl font-medium text-zinc-900 dark:text-white font-mono tracking-tight transition-colors duration-300">
-                          {mediaVol.value}
+               
+               <div className={isTracking ? 'hidden md:block' : ''}>
+                {results.isValid && !results.error ? (
+                  <div className="space-y-8">
+                      {/* Media Display - Swapped for Fixed Media Mode */}
+                      <div className="flex items-end justify-between border-b border-zinc-200 dark:border-white/5 pb-4 transition-colors duration-300">
+                        <span className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
+                          {experiment.calculationMode === 'fixed_media' ? 'Use Base Media' : 'Add Fresh Media'}
                         </span>
-                        <span className="text-sm ml-1 text-zinc-500 font-medium">{mediaVol.unit}</span>
+                        <div className="text-right">
+                          <span className="text-3xl font-medium text-zinc-900 dark:text-white font-mono tracking-tight transition-colors duration-300">
+                            {mediaVol.value}
+                          </span>
+                          <span className="text-sm ml-1 text-zinc-500 font-medium">{mediaVol.unit}</span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-end justify-between">
-                      <span className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Add Inoculum</span>
-                      <div className="text-right">
-                        <span className="text-4xl font-semibold text-emerald-600 dark:text-emerald-400 font-mono tracking-tight transition-colors duration-300">
-                          {inocVol.value}
+                      <div className="flex items-end justify-between">
+                        <span className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Add Inoculum</span>
+                        <div className="text-right">
+                          <span className="text-4xl font-semibold text-emerald-600 dark:text-emerald-400 font-mono tracking-tight transition-colors duration-300">
+                            {inocVol.value}
+                          </span>
+                          <span className="text-sm ml-1 text-zinc-500 font-medium">{inocVol.unit}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-dashed border-zinc-200 dark:border-white/10 flex justify-between items-center text-sm text-zinc-500 transition-colors duration-300">
+                        <span className="uppercase tracking-wider text-xs">Final Total Volume</span>
+                        <span className="font-mono text-zinc-700 dark:text-zinc-300">
+                          {totalVol.value} {totalVol.unit}
                         </span>
-                        <span className="text-sm ml-1 text-zinc-500 font-medium">{inocVol.unit}</span>
                       </div>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-dashed border-zinc-200 dark:border-white/10 flex justify-between items-center text-sm text-zinc-500 transition-colors duration-300">
-                      <span className="uppercase tracking-wider text-xs">Final Total Volume</span>
-                      <span className="font-mono text-zinc-700 dark:text-zinc-300">
-                        {totalVol.value} {totalVol.unit}
-                      </span>
-                    </div>
-                 </div>
-               ) : (
-                 <div className="flex flex-col items-center justify-center h-48 text-zinc-500 dark:text-zinc-600">
-                    <AlertCircle className="w-6 h-6 mb-3 opacity-30" />
-                    <p className="text-center text-sm tracking-wider uppercase">{results.error || "Enter valid parameters"}</p>
-                 </div>
-               )}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-48 text-zinc-500 dark:text-zinc-600">
+                      <AlertCircle className="w-6 h-6 mb-3 opacity-30" />
+                      <p className="text-center text-sm tracking-wider uppercase">{results.error || "Enter valid parameters"}</p>
+                  </div>
+                )}
+               </div>
              </div>
           </div>
 

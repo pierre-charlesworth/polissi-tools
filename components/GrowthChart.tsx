@@ -65,8 +65,8 @@ export const GrowthChart: React.FC<GrowthChartProps> = ({ data, targetOD, startO
   const stnOpacity = isDarkMode ? 0.05 : 0.05;
 
   return (
-    <div className="w-full h-96 bg-white dark:bg-lab-card rounded-2xl border border-zinc-200 dark:border-white/10 p-8 shadow-sm dark:shadow-2xl dark:shadow-black/20 transition-colors duration-300">
-      <div className="flex justify-between items-center mb-8">
+    <div className="w-full h-96 bg-white dark:bg-lab-card rounded-2xl border border-zinc-200 dark:border-white/10 p-5 shadow-sm dark:shadow-2xl dark:shadow-black/20 transition-colors duration-300 flex flex-col">
+      <div className="flex justify-between items-center mb-6 shrink-0 px-1">
         <h3 className="text-lg font-medium font-sans text-zinc-900 dark:text-zinc-100 tracking-wide">Growth Trajectory</h3>
         <div className="flex items-center gap-4">
           {harvestPoint && (
@@ -83,152 +83,156 @@ export const GrowthChart: React.FC<GrowthChartProps> = ({ data, targetOD, startO
           )}
         </div>
       </div>
-      <ResponsiveContainer width="100%" height="80%">
-        <LineChart
-          data={data}
-          margin={{
-            top: 10,
-            right: 10,
-            left: 0,
-            bottom: 20,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-          
-          {/* Phase Backgrounds */}
-          {phases && (
-            <>
-              {/* Lag Phase */}
-              {phases.lagDuration > 0 && (
-                <ReferenceArea 
-                  x1={0} 
-                  x2={phases.lagDuration} 
-                  fill={lagFill} 
-                  fillOpacity={lagOpacity}
-                >
-                  <Label value="LAG" position="insideTop" fill={axisColor} fontSize={10} fontWeight={600} offset={20} style={{ letterSpacing: '0.1em' }} />
-                </ReferenceArea>
-              )}
-
-              {/* Exponential Phase */}
-              <ReferenceArea 
-                x1={phases.lagDuration} 
-                x2={phases.stationaryStart} 
-                fill={expFill} 
-                fillOpacity={expOpacity}
-              >
-                 <Label value="EXP" position="insideTop" fill={axisColor} fontSize={10} fontWeight={600} offset={20} style={{ letterSpacing: '0.1em', opacity: 0.8 }} />
-              </ReferenceArea>
-
-              {/* Stationary Phase */}
-              <ReferenceArea 
-                x1={phases.stationaryStart} 
-                fill={stnFill} 
-                fillOpacity={stnOpacity}
-              >
-                <Label value="STN" position="insideTop" fill={axisColor} fontSize={10} fontWeight={600} offset={20} style={{ letterSpacing: '0.1em' }} />
-              </ReferenceArea>
-            </>
-          )}
-
-          <XAxis 
-            type="number"
-            dataKey="time" 
-            stroke={axisColor}
-            tick={{ fill: axisColor, fontSize: 11, fontFamily: 'JetBrains Mono' }}
-            tickLine={false}
-            axisLine={false}
-            domain={[0, 'dataMax']}
-            tickFormatter={(val) => `${Math.floor(val / 60)}h${val % 60 > 0 ? `${Math.round(val % 60)}` : ''}`}
-            minTickGap={40}
-            dy={10}
-          />
-          <YAxis 
-            stroke={axisColor} 
-            tick={{ fill: axisColor, fontSize: 11, fontFamily: 'JetBrains Mono' }}
-            tickLine={false}
-            axisLine={false}
-            domain={[0, 'auto']}
-          >
-            <Label value="OD600" angle={-90} position="insideLeft" style={{ fill: axisColor, fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em' }} dx={-10} />
-          </YAxis>
-          <Tooltip 
-            contentStyle={{ backgroundColor: tooltipBg, borderRadius: '4px', border: `1px solid ${tooltipBorder}`, color: textColor }}
-            itemStyle={{ color: textColor, fontFamily: 'JetBrains Mono', fontSize: '12px' }}
-            formatter={(value: number) => [value.toFixed(3), 'OD600']}
-            labelFormatter={(label: number) => {
-              const h = Math.floor(label / 60);
-              const m = Math.round(label % 60);
-              return `${h}h ${m}m`;
+      <div className="flex-1 w-full min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={data}
+            margin={{
+              top: 5,
+              right: 5, 
+              left: 0,
+              bottom: 5,
             }}
-            cursor={{ stroke: axisColor, strokeWidth: 1 }}
-          />
-          
-          <Line
-            type="monotone"
-            dataKey="od"
-            stroke={lineColor}
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4, fill: tooltipBg, stroke: lineColor }}
-            animationDuration={500}
-            isAnimationActive={true}
-          />
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+            
+            {/* Phase Backgrounds */}
+            {phases && (
+              <>
+                {/* Lag Phase */}
+                {phases.lagDuration > 0 && (
+                  <ReferenceArea 
+                    x1={0} 
+                    x2={phases.lagDuration} 
+                    fill={lagFill} 
+                    fillOpacity={lagOpacity}
+                  >
+                    <Label value="LAG" position="insideTop" fill={axisColor} fontSize={10} fontWeight={600} offset={10} style={{ letterSpacing: '0.1em' }} />
+                  </ReferenceArea>
+                )}
 
-          {harvestPoint && (
-            <ReferenceLine 
-              key={`harvest-time-${harvestPoint.time}`}
-              x={harvestPoint.time} 
-              stroke="#10b981" 
-              strokeDasharray="3 3" 
-              strokeOpacity={0.5}
-              isFront={true}
-              label={{ 
-                value: 'HARVEST', 
-                position: 'insideTopRight', 
-                fill: '#10b981', 
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: '0.1em'
-              }} 
+                {/* Exponential Phase */}
+                <ReferenceArea 
+                  x1={phases.lagDuration} 
+                  x2={phases.stationaryStart} 
+                  fill={expFill} 
+                  fillOpacity={expOpacity}
+                >
+                   <Label value="EXP" position="insideTop" fill={axisColor} fontSize={10} fontWeight={600} offset={10} style={{ letterSpacing: '0.1em', opacity: 0.8 }} />
+                </ReferenceArea>
+
+                {/* Stationary Phase */}
+                <ReferenceArea 
+                  x1={phases.stationaryStart} 
+                  fill={stnFill} 
+                  fillOpacity={stnOpacity}
+                >
+                  <Label value="STN" position="insideTop" fill={axisColor} fontSize={10} fontWeight={600} offset={10} style={{ letterSpacing: '0.1em' }} />
+                </ReferenceArea>
+              </>
+            )}
+
+            <XAxis 
+              type="number"
+              dataKey="time" 
+              stroke={axisColor}
+              tick={{ fill: axisColor, fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tickLine={false}
+              axisLine={false}
+              domain={[0, 'dataMax']}
+              tickFormatter={(val) => `${Math.floor(val / 60)}h${val % 60 > 0 ? `${Math.round(val % 60)}` : ''}`}
+              minTickGap={40}
+              dy={10}
+              height={30}
             />
-          )}
-          
-          {harvestPoint && (
-             <ReferenceLine 
-               key={`harvest-od-${harvestPoint.od}`}
-               y={harvestPoint.od} 
-               stroke="#10b981" 
-               strokeDasharray="3 3"
-               strokeOpacity={0.5}
-               isFront={true}
-             />
-          )}
-
-          {harvestPoint && (
-             <ReferenceDot
-               key={`harvest-dot-${harvestPoint.time}-${harvestPoint.od}`}
-               x={harvestPoint.time}
-               y={harvestPoint.od}
-               r={3}
-               fill={isDarkMode ? "#09090b" : "#ffffff"}
-               stroke="#10b981"
-               strokeWidth={2}
-               isFront={true}
-             />
-          )}
-
-          {currentPoint && (
-            <ReferenceDot 
-              key={`current-dot-${currentPoint.time}`}
-              x={currentPoint.time} 
-              y={currentPoint.od} 
-              shape={<PulsingDot />}
-              isFront={true}
+            <YAxis 
+              stroke={axisColor} 
+              tick={{ fill: axisColor, fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tickLine={false}
+              axisLine={false}
+              domain={[0, 'auto']}
+              width={40}
+            >
+              <Label value="OD600" angle={-90} position="insideLeft" style={{ fill: axisColor, fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em' }} dx={0} />
+            </YAxis>
+            <Tooltip 
+              contentStyle={{ backgroundColor: tooltipBg, borderRadius: '4px', border: `1px solid ${tooltipBorder}`, color: textColor }}
+              itemStyle={{ color: textColor, fontFamily: 'JetBrains Mono', fontSize: '12px' }}
+              formatter={(value: number) => [value.toFixed(3), 'OD600']}
+              labelFormatter={(label: number) => {
+                const h = Math.floor(label / 60);
+                const m = Math.round(label % 60);
+                return `${h}h ${m}m`;
+              }}
+              cursor={{ stroke: axisColor, strokeWidth: 1 }}
             />
-          )}
-        </LineChart>
-      </ResponsiveContainer>
+            
+            <Line
+              type="monotone"
+              dataKey="od"
+              stroke={lineColor}
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 4, fill: tooltipBg, stroke: lineColor }}
+              animationDuration={500}
+              isAnimationActive={true}
+            />
+
+            {harvestPoint && (
+              <ReferenceLine 
+                key={`harvest-time-${harvestPoint.time}`}
+                x={harvestPoint.time} 
+                stroke="#10b981" 
+                strokeDasharray="3 3" 
+                strokeOpacity={0.5}
+                isFront={true}
+                label={{ 
+                  value: 'HARVEST', 
+                  position: 'insideTopRight', 
+                  fill: '#10b981', 
+                  fontSize: 10,
+                  fontWeight: 600,
+                  letterSpacing: '0.1em'
+                }} 
+              />
+            )}
+            
+            {harvestPoint && (
+               <ReferenceLine 
+                 key={`harvest-od-${harvestPoint.od}`}
+                 y={harvestPoint.od} 
+                 stroke="#10b981" 
+                 strokeDasharray="3 3"
+                 strokeOpacity={0.5}
+                 isFront={true}
+               />
+            )}
+
+            {harvestPoint && (
+               <ReferenceDot
+                 key={`harvest-dot-${harvestPoint.time}-${harvestPoint.od}`}
+                 x={harvestPoint.time}
+                 y={harvestPoint.od}
+                 r={3}
+                 fill={isDarkMode ? "#09090b" : "#ffffff"}
+                 stroke="#10b981"
+                 strokeWidth={2}
+                 isFront={true}
+               />
+            )}
+
+            {currentPoint && (
+              <ReferenceDot 
+                key={`current-dot-${currentPoint.time}`}
+                x={currentPoint.time} 
+                y={currentPoint.od} 
+                shape={<PulsingDot />}
+                isFront={true}
+              />
+            )}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
