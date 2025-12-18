@@ -45,6 +45,37 @@
         color: var(--text-body);
         transition: background-color 0.3s ease, color 0.3s ease;
       }
+      
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+      
+      /* Custom thin scrollbar for other areas */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(161, 161, 170, 0.2);
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(161, 161, 170, 0.4);
+      }
+      
+      /* Safe area spacing */
+      .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
     </style>
   <script type="importmap">
 {

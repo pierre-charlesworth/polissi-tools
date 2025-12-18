@@ -16,6 +16,44 @@ export interface Experiment extends CalculatorState {
   createdAt: number;
 }
 
+export interface StandaloneTimer {
+  id: string;
+  label: string;
+  durationMinutes: number;
+  startTime: number | null; // timestamp when started
+  pausedTimeRemaining: number | null; // if paused, how much is left
+  status: 'idle' | 'running' | 'paused' | 'completed';
+  createdAt: number;
+}
+
+export type StepActionType = 'timer' | 'experiment';
+
+export interface StepAction {
+  type: StepActionType;
+  // For timers
+  durationMinutes?: number;
+  timerLabel?: string;
+  // For experiments
+  experimentConfig?: Partial<Experiment>;
+}
+
+export interface ProtocolStep {
+  id: string;
+  text: string;
+  isCompleted: boolean;
+  action?: StepAction;
+  activeTimerId?: string;
+}
+
+export interface Protocol {
+  id: string;
+  title: string;
+  description?: string;
+  tags?: string[];
+  steps: ProtocolStep[];
+  createdAt: number;
+}
+
 export interface CalculationResult {
   inoculumVolume: number; // mL
   mediaVolume: number; // mL
@@ -37,3 +75,5 @@ export interface TrackingStatus {
   formattedTime: string;
   completionPercentage: number;
 }
+
+export type View = 'dashboard' | 'calculator' | 'experiments' | 'timers' | 'protocols' | 'settings';
